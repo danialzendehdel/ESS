@@ -1,0 +1,63 @@
+{
+
+	"nome_fis":"fis_energy_community",
+	"tipo_fis":"mamdami",
+	"n_input":1,
+	"n_output":1,
+	"n_regole":5,
+	"and_method":"min",
+	"or_method":"max",
+	"imp_method":"min",
+	"agg_method":"max",
+	"defuzz_method":"centroid",
+
+	"nome_input":"SoC",
+	"range_i":[0,1],
+	"n_MF_i":5,
+	"nome_MF_1_i":"very_low",
+	"nome_MF_2_i":"low",
+	"nome_MF_3_i":"medium",	
+	"nome_MF_4_i":"high",
+	"nome_MF_5_i":"very_high",	
+	"tipo_MF_1_i":"trapmf",
+	"tipo_MF_2_i":"trimf",
+	"tipo_MF_3_i":"trimf",
+	"tipo_MF_4_i":"trimf",
+	"tipo_MF_5_i":"trapmf",
+	"ascisse_MF_1_i":[-0.1, 0, 0.1, 0.25],
+	"ascisse_MF_2_i":[0.15, 0.3, 0.45],
+	"ascisse_MF_3_i":[0.35, 0.5, 0.65],
+	"ascisse_MF_4_i":[0.55, 0.7, 0.85],
+	"ascisse_MF_5_i":[0.75, 0.9, 1, 1.1],
+
+	"nome_output":"alpha",
+	"range_o":[0,1],
+	"n_MF_o":5,
+	"nome_MF_1_o":"very_low",
+	"nome_MF_2_o":"low",
+	"nome_MF_3_o":"medium",	
+	"nome_MF_4_o":"high",
+	"nome_MF_5_o":"very_high",	
+	"tipo_MF_1_o":"trapmf",
+	"tipo_MF_2_o":"trimf",
+	"tipo_MF_3_o":"trimf",
+	"tipo_MF_4_o":"trimf",
+	"tipo_MF_5_o":"trapmf",
+	"ascisse_MF_1_o":[-0.1, 0, 0.1, 0.25],
+	"ascisse_MF_2_o":[0.15, 0.3, 0.45],
+	"ascisse_MF_3_o":[0.35, 0.5, 0.65],
+	"ascisse_MF_4_o":[0.55, 0.7, 0.85],
+	"ascisse_MF_5_o":[0.75, 0.9, 1, 1.1],
+
+	"regole":[
+
+[1,1,1,1],
+[2,1,1,1],
+[3,1,1,1],
+[4,1,1,1],
+[5,1,1,1]  
+
+]
+
+
+}

@@ -1,0 +1,11 @@
+% Funzione sferica
+% valoreFunzioneObiettivoIndividuo = gene_1^2 + gene_2^2;
+% Rastrigin - minimo in [0, 0] pari a 0 - intervallo gene [-5.12, 5.12]  
+% valoreFunzioneObiettivoIndividuo = 20 + gene_1^2 + gene_2^2  - 10*(cos(2*pi*gene_1) + cos(2*pi*gene_2));
+% Rosenbrock - minimo in [1, 1] pari a 0 - intervallo gene [-2.048, 2.048]
+% valoreFunzioneObiettivoIndividuo = 100 * (gene_1^2 - gene_2)^2 + (1 - gene_1)^2;
+% Schwefel - minimo in [420.9687, 420.9687] pari a 0 - intervallo gene [-500, 500]
+ valoreFunzioneObiettivoIndividuo = 418.9829 * 2 - (gene_1 * sin((abs(gene_1))^0.5) + gene_2 * sin((abs(gene_2))^0.5));
+% Griewank - minimo in [0, 0] pari a 0 - intervallo gene [-600, 600]
+% valoreFunzioneObiettivoIndividuo = (gene_1^2/4000) + (gene_2^2/4000)  - ...
+    % cos(gene_1/((2)^0.5)) * cos(gene_2/((2)^0.5)) + 1;
