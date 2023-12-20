@@ -107,7 +107,7 @@ u=842.71 # costo unitario batteria [€/kWh]
 MG_4=MG(is_CER, SoC_0, Q, P_S_max,eta, SoC_min,SoC_max,PR_3,B,a,b,CPR,
              Pz,TP_CE, TRAS_e, max_BTAU_m,u,SoC_0)
 
-# microgrid 5
+# microgrid 5   
 is_CER=0
 TP_CE=110 # tariffa premio [€/MWh]: 110, se si tratta di una CER; 100, se si tratta di un AUC
 P_G_predetta=4

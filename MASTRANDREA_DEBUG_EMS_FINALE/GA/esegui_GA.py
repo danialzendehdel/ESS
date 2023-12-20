@@ -1,9 +1,15 @@
 
 
-# Funzione che esegue l'Algoritmo Genetico 
+# Funzione che esegue l'Algoritmo Genetico
 def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
               ,nome_funzione_obiettivo,esecuzione,dati_modello):
-    
+
+    # ==========================================================
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Genetic algorithm")
+    # ==========================================================
+
     # importa le funzioni degli operatori
     from GA.file_selection import selection
     from GA.file_crossover import crossover
@@ -29,7 +35,39 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
     np.random.seed(1337)
     # misura l'istante iniziale
     start_time=time.time()
-    
+
+
+    # =========================================================
+    parser.add_argument('--pop_size', type=int, default=metaparametri[0], help='dimensioni_popolazione')
+    parser.add_argument('--gen_size', type= int, default= len(limiti_geni), help='numero_geni')
+    parser.add_argument('--cross_over', type=float, default=metaparametri[1],help='crossover_fraction')
+    parser.add_argument('--muta_rate', type=float, default=metaparametri[2], help='prob_mutazione')
+    parser.add_argument('--mute_attenuation', type= float, default=metaparametri[3], help='attenuazione_mutazione')
+    parser.add_argument('--early_stopping', type=str, default=metaparametri[4],help='stopping_condition')
+    parser.add_argument('--max_gen', type=int, default=metaparametri[5], help='max_gen')
+    parser.add_argument('--max_stall', type=int,default=metaparametri[6], help='max_stall')
+    parser.add_argument('--tolerance', type=float, default=metaparametri[7], help='tollernza')
+    parser.add_argument('--number_individual', type=int, default=metaparametri[8], help='numero_individui_elite')
+    parser.add_argument('--tournament', type=int, default=metaparametri[9], help='dimensione_torneo')
+    parser.add_argument('--children_mute', type=float, default=metaparametri[10], help='frazione_figli_da_mutare')
+
+    #parser.add_argument('--n_crossover', type=int, default=, help='numero_individui_crossover')
+    #parser.add_argument('--n_mutation', type=int, default=, help='numero_individui_mutation')
+
+    args = parser.parse_args()
+    print(f'dimensioni_popolazione = {args.pop_size}, \n',
+          f'numero_geni = {args.gen_size} \n'
+          f'crossover_fraction = {args.cross_over}\n'
+          f'prob_mutazione = {args.muta_rate} \n'
+          f'attenuazione_mutazione = {args.mute_attenuation}\n '
+          f'stopping_condition = {args.early_stopping} \n'
+          f'max_gen = {args.max_gen}  \n'
+          f'tollernza = {args.tolerance} \n'
+          f'numero_individui_elite = {args.number_individual} \n'
+          f'dimensione_torneo = {args.tournament} \n'
+          f'frazione_figli_da_mutare = {args.children_mute}')
+
+    # =========================================================
     # estrae informazioni dagli input
     dimensioni_popolazione=metaparametri[0]
     numero_geni=len(limiti_geni[0])
@@ -43,15 +81,18 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
     numero_individui_elite=metaparametri[8]
     dimensione_torneo=metaparametri[9]
     frazione_figli_da_mutare=metaparametri[10]
+
     numero_individui_crossover=round(crossover_fraction*dimensioni_popolazione)
     numero_individui_mutation=dimensioni_popolazione-numero_individui_elite-numero_individui_crossover
-    
-    # genera la popolazione iniziale vuota e dichiara/inizializza alcune variabili  
+
+    # genera la popolazione iniziale vuota e dichiara/inizializza alcune variabili
     # (l'ultimo vettore contiene i valori di FO che, per ora, sono nulli)
     popolazione=[[0]*(numero_geni+1) for _ in range(dimensioni_popolazione)]
     best_FO=[]
     media_FO=[]
     indice_FO=numero_geni
+
+
 
     # genera la prima popolazione con alleli pseudocasuali
     for indice_individuo in range(dimensioni_popolazione):
@@ -62,31 +103,42 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
             allele=limite_inferiore_gene+numero_random*(limite_superiore_gene-limite_inferiore_gene)
             popolazione[indice_individuo][indice_gene]=allele
         indice_individuo=0
-        
+
     # inizia il ciclo delle generazioni
     for generazione in range(max_gen):
-        
+
         #print('Gen:   '+str(generazione))
-        
+
         # calcola il decadimento della mutazione
         decadimento_mutazione=(1-generazione/max_gen)**attenuazione_mutazione
-        
+
 
         # calcola il valore della FO per la popolazione
         copia_popolazione_per_FO=copy.deepcopy(popolazione)
-        fo=calcola_FO_popolazione(funzione_obiettivo,copia_popolazione_per_FO,
-                                   dati_modello)
-        trasposta_popolazione=[[fila[i] for fila in copia_popolazione_per_FO] for i 
-                               in range(len(copia_popolazione_per_FO[0]))]
-        trasposta_popolazione[len(trasposta_popolazione)-1]=fo 
-        popolazione=[[fila[i] for fila in trasposta_popolazione] for i 
-                 in range(len(trasposta_popolazione[0]))]
 
-            
+        print(f'length population:{len(popolazione)}')
+        print(popolazione)
+        print(f'length: copia_popolazione_per_FO = {len(copia_popolazione_per_FO[0])}')
+        print(copia_popolazione_per_FO)
+
+
+        fo=calcola_FO_popolazione(funzione_obiettivo,copia_popolazione_per_FO, dati_modello)
+        trasposta_popolazione=[[fila[i] for fila in copia_popolazione_per_FO] for i in range(len(copia_popolazione_per_FO[0]))]
+        trasposta_popolazione[len(trasposta_popolazione)-1]=fo
+
+
+        #print(trasposta_popolazione)
+        #print(trasposta_popolazione[0] if trasposta_popolazione else "trasposta_popolazione is None")
+        #print("here")
+        #[print(fila) for fila in trasposta_popolazione]
+
+        popolazione = [[fila[i] for fila in trasposta_popolazione] for i in range(len(trasposta_popolazione[0]))]
+
+
         # ordina la popolazione per valori di FO crescenti
         copia_popolazione_per_ordinamento=copy.deepcopy(popolazione)
         popolazione_ordinata = sorted(copia_popolazione_per_ordinamento, key=lambda x: x[indice_FO])
-        
+
         # pesca il miglior individuo e il suo valore della FO per le generazione corrente
         best_FO_corrente=min([row[numero_geni] for row in popolazione])
         media_FO_corrente=mean([row[numero_geni] for row in popolazione])
@@ -96,7 +148,7 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
         for row in popolazione:
             if row[numero_geni] == best_FO_corrente:
                 miglior_individuo_corrente=row
-        
+
         # resa grafica
         # fig = plt.figure()
         # plt.title("Best-mean FO"+"-"+nome_funzione_obiettivo+"-Esec. "+str(esecuzione)
@@ -108,11 +160,11 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
         # plt.legend()
         # plt.draw()
         # plt.show()
-        
+
         # controlla la stopping contidion "max_stall"
         risultati=[]
         
-        if stopping_condition == "FO_thresh":  
+        if stopping_condition == "FO_thresh":
             if best_FO_corrente < tolleranza:
                 risultati =[best_FO_corrente,miglior_individuo_corrente[0:len(miglior_individuo_corrente)-1],generazione,stopping_condition]
                 return risultati
@@ -120,7 +172,7 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
                 risultati =[best_FO_corrente,miglior_individuo_corrente[0:len(miglior_individuo_corrente)-1],generazione,stopping_condition]
                 print('max gen-raggiunta')
                 return risultati
-            
+
         if stopping_condition=="max_stall":
             l=len(best_FO)
             if l>=50:
@@ -141,20 +193,20 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
                     tempo_esecuzione=end_time-start_time
                     # restituisce la FO del miglior individuo in assoluto (la soluzione)
                     soluzione=[risultati]+[tempo_esecuzione]
-                    
+
                     fig = plt.figure()
                     plt.title("Best-mean FO"+"-"+nome_funzione_obiettivo+"-Esec. "+str(esecuzione)
                               +"\n"+"Best = "+str(round(best_FO_corrente,3)))
                     plt.plot(best_FO, 'k*', label="best")
                     plt.plot(media_FO,'b+',label="mean")
-                    plt.xlabel('gen')           
+                    plt.xlabel('gen')
                     plt.ylabel('FO')
                     plt.legend()
                     plt.draw()
                     plt.show()
                     plt.savefig('best-mean.eps',format='eps')
-                    
-                    
+
+
                     return soluzione
         # controlla la stopping condition "max_gen"
         if stopping_condition=="max_gen":
@@ -170,29 +222,29 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
                 tempo_esecuzione=end_time-start_time
                 # restituisce la FO del miglior individuo in assoluto (la soluzione)
                 soluzione=[risultati]+[tempo_esecuzione]
-                
+
                 fig = plt.figure()
                 plt.title("Best-mean FO"+"-"+nome_funzione_obiettivo+"-Esec. "+str(esecuzione)
                           +"\n"+"Best = "+str(round(best_FO_corrente,3)))
                 plt.plot(best_FO, 'k*', label="best")
                 plt.plot(media_FO,'b+',label="mean")
-                plt.xlabel('gen')           
+                plt.xlabel('gen')
                 plt.ylabel('FO')
                 plt.legend()
                 plt.draw()
                 plt.show()
                 plt.savefig('best-mean.eps',format='eps')
-                
+
                 return soluzione
-        
+
         # trova gli individui di elite 
         copia_popolazione_per_elitismo=copy.deepcopy(popolazione_ordinata)
-        individui_elite=[[0]*(numero_geni+1) for _ in 
+        individui_elite=[[0]*(numero_geni+1) for _ in
                          range(numero_individui_elite)]
         for indice_individuo_elite in range(numero_individui_elite):
             individuo_elite=copia_popolazione_per_elitismo[indice_individuo_elite]
             individui_elite[indice_individuo_elite]=individuo_elite
-            
+
         # effettua la selection nella popolazione non ordinata
         copia_popolazione_per_selection=copy.deepcopy(popolazione)
         individui_crossover=[[0]*(numero_geni+1) for _ in range(numero_individui_crossover)]
@@ -200,7 +252,7 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
             numero_random_1=np.random.random()
             individuo_selezionato=selection(copia_popolazione_per_selection,dimensione_torneo,dimensioni_popolazione,numero_geni,numero_random_1)
             individui_crossover[contatore_individui_selezionati]=individuo_selezionato
-            
+
         # sceglie gli individui da mutare nella popolazione non ordinata
         copia_popolazione_per_selezione_mutanti=copy.deepcopy(popolazione)
         individui_da_mutare=[[0]*(numero_geni+1) for _ in range(numero_individui_mutation)]
@@ -215,17 +267,17 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
             riga_crossover[numero_geni]=0
         for riga_mutation in  individui_da_mutare :
             riga_mutation[numero_geni]=0
-            
+
         # effettua il crossover
         numero_casuale_2=np.random.random()
         individui_figli=crossover(individui_crossover,numero_geni,numero_individui_crossover, numero_casuale_2)
-        
+
         # effettua la mutation
         individui_mutati=mutation(individui_da_mutare,numero_geni,prob_mutazione, limiti_geni, decadimento_mutazione,generazione, numero_individui_mutation)
-       
+
         # compone la nuova popolazione 
         nuova_popolazione=individui_elite+individui_figli+individui_mutati
-        
+
         # controlla che gli alleli rispettino i limiti
         for indice_individuo in range(0,len(nuova_popolazione)):
             for indice_gene in range(0,len(nuova_popolazione[indice_individuo])-1):
@@ -234,15 +286,15 @@ def esegui_GA(funzione_obiettivo, limiti_geni, metaparametri
                 limite_superiore=limiti_geni[1][indice_gene]
                 if allele<limite_inferiore or allele >limite_superiore:
                     raise ValueError("Alleli oltre i limiti !!!")
-              
-                
+
+
         # salva la popolazione per la generazione corrente (per backup)
         # salva_popolazione(generazione,popolazione)
         #print("Fine generazione "+str(generazione))
-        
+
         #a ggiorna la popolazione
         popolazione=nuova_popolazione
-        
 
-    
+
+
 
